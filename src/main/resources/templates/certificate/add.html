@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавление сертификата</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Добавление сертификата</h2>
+    <form th:action="@{/experts/{expertId}/certificates/add}" th:object="${certificate}" method="post">
+        <div class="form-group">
+            <label for="name">Название сертификата:</label>
+            <input type="text" class="form-control" id="name" th:field="*{certificate.form}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+</div>
+</body>
+</html>

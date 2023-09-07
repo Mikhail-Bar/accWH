@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список экспертов</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Список экспертов</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Имя</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="expert : ${experts}">
+            <td th:text="${expert.Fname}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/experts/add}" class="btn btn-primary">Добавить эксперта</a>
+    <a th:href="@{/certificates/add}" class="btn btn-primary">Добавить сертификат</a>
+</div>
+</body>
+</html>

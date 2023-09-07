@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Редактирование эксперта</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h2>Редактирование эксперта: <span th:text="${expert.name}"></span></h2>
+  <form th:action="@{/experts/{expertId}/edit}" th:object="${expert}" method="post">
+    <input type="hidden" th:field="*{id}">
+    <div class="form-group">
+      <label for="name">Имя эксперта:</label>
+      <input type="text" class="form-control" id="name" th:field="*{expert.Fname}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+  </form>
+</div>
+</body>
+</html>
