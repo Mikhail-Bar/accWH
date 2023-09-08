@@ -9,8 +9,16 @@
     <h2>Добавление эксперта</h2>
     <form th:action="@{/experts/add}" th:object="${expert}" method="post">
         <div class="form-group">
-            <label for="name">Имя эксперта:</label>
-            <input type="text" class="form-control" id="name" th:field="*{expert.Fname}" required>
+            <label for="Fname">Имя:</label>
+            <input type="text" class="form-control" id="Fname" th:field="*{Fname}" required>
+        </div>
+        <div class="form-group">
+            <label for="Lname">Фамилия:</label>
+            <input type="text" class="form-control" id="Lname" th:field="*{Lname}" required>
+        </div>
+        <div class="form-group">
+            <label for="dep">Отдел:</label>
+            <input type="text" class="form-control" id="dep" th:field="*{dep}" required>
         </div>
         <button type="submit" class="btn btn-primary">Добавить</button>
     </form>

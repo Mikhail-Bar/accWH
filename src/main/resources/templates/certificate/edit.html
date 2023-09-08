@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Добавление сертификата</title>
+    <title>Редактирование сертификата</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-    <h2>Добавление сертификата</h2>
-    <form th:action="@{/certificates/add}" th:object="${certificate}" method="post">
+    <h2>Редактирование сертификата: <span th:text="${certificate.form}"></span></h2>
+    <form th:action="@{/certificates/{certificateId}/edit}" th:object="${certificate}" method="post">
+        <input type="hidden" th:field="*{id}">
         <div class="form-group">
             <label for="form">Форма:</label>
             <input type="text" class="form-control" id="form" th:field="*{form}" required>
@@ -29,7 +30,7 @@
                 <option th:each="expert : ${experts}" th:value="${expert.id}" th:text="${expert.Fname + ' ' + expert.Lname}"></option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Добавить</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>
 </div>
 </body>

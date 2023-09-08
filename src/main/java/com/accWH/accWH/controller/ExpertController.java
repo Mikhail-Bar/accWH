@@ -12,6 +12,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/experts")
 public class ExpertController {
+
     @Autowired
     private ExpertRepository expertRepository;
 
@@ -50,6 +51,9 @@ public class ExpertController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid expert Id:" + expertId));
 
         existingExpert.setFname(expert.getFname());
+        existingExpert.setLname(expert.getLname());
+        existingExpert.setDep(expert.getDep());
+
         expertRepository.save(existingExpert);
         return "redirect:/experts";
     }

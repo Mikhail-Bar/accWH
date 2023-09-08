@@ -9,12 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/experts/{expertId}/certificates")
+@RequestMapping("/certificates")
 public class CertificateController {
+
     @Autowired
     private CertificateRepository certificateRepository;
 
@@ -22,45 +22,58 @@ public class CertificateController {
     private ExpertRepository expertRepository;
 
     @GetMapping
-    public String listCertificates(@PathVariable Long expertId, Model model) {
-        Expert expert = expertRepository.findById(expertId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid expert Id:" + expertId));
-
-        List<Certificate> certificates = certificateRepository.findByExpertId(expertId);
+    public String listCertificates(Model model) {
+        List<Certificate> certificates = certificateRepository.findAll();
         model.addAttribute("certificates", certificates);
-        model.addAttribute("expert", expert);
         return "certificate/list";
     }
 
     @GetMapping("/add")
-    public String addCertificateForm(@PathVariable Long expertId, Model model) {
-        Expert expert = expertRepository.findById(expertId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid expert Id:" + expertId));
-
+    public String addCertificateForm(Model model) {
+        List<Expert> experts = expertRepository.findAll();
         Certificate certificate = new Certificate();
         model.addAttribute("certificate", certificate);
-        model.addAttribute("expert", expert);
+        model.addAttribute("experts", experts);
         return "certificate/add";
     }
 
     @PostMapping("/add")
-    public String addCertificate(@PathVariable Long expertId, @ModelAttribute Certificate certificate) {
-        Expert expert = expertRepository.findById(expertId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid expert Id:" + expertId));
-
-        certificate.setExpert(expert);
+    public String addCertificate(@ModelAttribute Certificate certificate) {
         certificateRepository.save(certificate);
-        return "redirect:/experts/{expertId}/certificates";
+        return "redirect:/certificates";
     }
 
-    @GetMapping("/{certificateId}/complete")
-    public String completeCertificate(@PathVariable Long expertId, @PathVariable Long certificateId) {
+    @GetMapping("/{certificateId}/edit")
+    public String editCertificateForm(@PathVariable Long certificateId, Model model) {
+        List<Expert> experts = expertRepository.findAll();
         Certificate certificate = certificateRepository.findById(certificateId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid certificate Id:" + certificateId));
 
-        certificate.setCompleted(true);
-        certificate.setCompletionDate(LocalDate.now());
-        certificateRepository.save(certificate);
-        return "redirect:/experts/{expertId}/certificates";
+        model.addAttribute("certificate", certificate);
+        model.addAttribute("experts", experts);
+        return "certificate/edit";
+    }
+
+    @PostMapping("/{certificateId}/edit")
+    public String editCertificate(@PathVariable Long certificateId, @ModelAttribute Certificate certificate) {
+        Certificate existingCertificate = certificateRepository.findById(certificateId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid certificate Id:" + certificateId));
+
+        existingCertificate.setForm(certificate.getForm());
+        existingCertificate.setCompleted(certificate.isCompleted());
+        existingCertificate.setCompletionDate(certificate.getCompletionDate());
+        existingCertificate.setExpert(certificate.getExpert());
+
+        certificateRepository.save(existingCertificate);
+        return "redirect:/certificates";
+    }
+
+    @GetMapping("/{certificateId}/delete")
+    public String deleteCertificate(@PathVariable Long certificateId) {
+        Certificate certificate = certificateRepository.findById(certificateId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid certificate Id:" + certificateId));
+
+        certificateRepository.delete(certificate);
+        return "redirect:/certificates";
     }
 }

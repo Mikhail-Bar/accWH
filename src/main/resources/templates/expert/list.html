@@ -11,11 +11,15 @@
         <thead>
         <tr>
             <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Отдел</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="expert : ${experts}">
             <td th:text="${expert.Fname}"></td>
+            <td th:text="${expert.Lname}"></td>
+            <td th:text="${expert.dep}"></td>
         </tr>
         </tbody>
     </table>
