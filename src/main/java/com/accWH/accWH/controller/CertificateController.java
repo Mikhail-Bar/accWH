@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/certificates")
@@ -75,5 +77,33 @@ public class CertificateController {
 
         certificateRepository.delete(certificate);
         return "redirect:/certificates";
+    }
+    @GetMapping("/complete/{id}")
+    public String completeCertificate(@PathVariable("id") Long id) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findById(id);
+
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+            if (!certificate.isCompleted()) {
+                certificate.setCompleted(true);
+                certificate.setCompletionDate(LocalDate.now());
+                certificateRepository.save(certificate);
+            }
+        }
+
+        return "redirect:/";
+    }
+    @GetMapping("/{id}")
+    public String getExpert(@PathVariable("id") Long id, Model model) {
+        Optional<Expert> optionalExpert = expertRepository.findById(id);
+
+        if (optionalExpert.isPresent()) {
+            Expert expert = optionalExpert.get();
+            model.addAttribute("expert", expert);
+        } else {
+            model.addAttribute("expert", null); // Передать null, если эксперт не найден
+        }
+
+        return "expert/expertHome";
     }
 }

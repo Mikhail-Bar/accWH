@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/experts")
@@ -66,4 +67,18 @@ public class ExpertController {
         expertRepository.delete(expert);
         return "redirect:/experts";
     }
+    @GetMapping("/{id}")
+    public String getExpert(@PathVariable("id") Long id, Model model) {
+        Optional<Expert> optionalExpert = expertRepository.findById(id);
+
+        if (optionalExpert.isPresent()) {
+            Expert expert = optionalExpert.get();
+            model.addAttribute("expert", expert);
+            return "home/expertHome";
+        } else {
+            // Обработка случая, если эксперт не найден
+            return "redirect:/"; // Или другой URL для перенаправления
+        }
+    }
+
 }

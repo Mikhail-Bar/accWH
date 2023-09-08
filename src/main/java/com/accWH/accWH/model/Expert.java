@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,4 +23,6 @@ public class Expert {
     private String Lname;
     @Column (name = "department")
     private String dep;
+    @OneToMany(mappedBy = "expert")
+    private List<Certificate> certificates;
 }
