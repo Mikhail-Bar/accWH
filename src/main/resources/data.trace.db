@@ -1,0 +1,3 @@
+2023-09-13 16:28:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "EXPERT" not found (this database is empty); SQL statement:
+select e1_0.id,e1_0.fname,e1_0.lname,e1_0.department from expert e1_0 [42104-214]

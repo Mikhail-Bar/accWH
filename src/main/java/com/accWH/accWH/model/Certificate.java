@@ -21,6 +21,8 @@ public class Certificate {
     private String form;
     @Column (name = "Completed")
     private boolean completed;
+    @Column(name = "DateCertificate")
+    private LocalDate dateCertificate;
     @Column(name = "CompletionDate")
     private LocalDate completionDate;
     @ManyToOne
