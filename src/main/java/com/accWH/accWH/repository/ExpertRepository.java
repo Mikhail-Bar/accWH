@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExpertRepository extends JpaRepository<Expert, Long> {
+    Expert findByUsername(String username);
 }
