@@ -22,14 +22,11 @@ public class Expert {
     private String Fname;
     @Column (name = "Lname")
     private String Lname;
-    @Column (name = "Role")
-    private String role;
-    @Column (name = "UserName")
-    private String username;
-    @Column (name = "Password")
-    private String password;
     @Column (name = "department")
     private String dep;
     @OneToMany(mappedBy = "expert")
     private List<Certificate> certificates;
+    @OneToOne(mappedBy = "expert")
+    private User user;
+
 }
