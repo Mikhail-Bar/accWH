@@ -1,10 +1,8 @@
 package com.accWH.accWH.controller;
 
 import com.accWH.accWH.model.Certificate;
-import com.accWH.accWH.model.Expert;
 import com.accWH.accWH.model.User;
 import com.accWH.accWH.repository.CertificateRepository;
-import com.accWH.accWH.repository.ExpertRepository;
 import com.accWH.accWH.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

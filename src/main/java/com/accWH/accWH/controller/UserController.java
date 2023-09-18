@@ -1,7 +1,6 @@
 package com.accWH.accWH.controller;
 
 import com.accWH.accWH.model.Certificate;
-import com.accWH.accWH.model.Expert;
 import com.accWH.accWH.model.User;
 import com.accWH.accWH.repository.CertificateRepository;
 import com.accWH.accWH.repository.UserRepository;
@@ -10,15 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/user/certificate")
 public class UserController {
-
 
     @Autowired
     private CertificateRepository certificateRepository;
@@ -33,14 +29,9 @@ public class UserController {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            Expert expert = user.getExpert();
+            List<Certificate> certificates = user.getCertificates();
 
-            if (expert != null) {
-                List<Certificate> certificates = expert.getCertificates();
-                model.addAttribute("certificates", certificates);
-            } else {
-                model.addAttribute("certificates", Collections.emptyList());
-            }
+            model.addAttribute("certificates", certificates);
         } else {
             throw new IllegalArgumentException("Пользователь не найден: " + username);
         }
@@ -61,16 +52,10 @@ public class UserController {
         User user = userRepository.findByUsername(username);
 
         if (user != null) {
-            Expert expert = user.getExpert();
-            if (expert != null) {
-                certificate.setExpert(expert);
-                certificateRepository.save(certificate);
-                return "redirect:/user/certificate";
-            } else {
-                return "redirect:/user/certificates?error=expert_not_found";
-            }
+            certificate.setUser(user);
+            certificateRepository.save(certificate);
+            return "redirect:/user/certificate";
         } else {
-
             return "redirect:/user/certificates?error=user_not_found";
         }
     }
@@ -105,5 +90,4 @@ public class UserController {
         certificateRepository.delete(certificate);
         return "redirect:/user/certificate";
     }
-
 }

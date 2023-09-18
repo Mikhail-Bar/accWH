@@ -1,7 +1,5 @@
 package com.accWH.accWH.controller;
 
-import com.accWH.accWH.model.Expert;
-import com.accWH.accWH.repository.ExpertRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

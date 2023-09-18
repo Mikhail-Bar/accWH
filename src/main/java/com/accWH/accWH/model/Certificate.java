@@ -30,6 +30,6 @@ public class Certificate {
     @Column(name = "CompletionDate")
     private LocalDate completionDate;
     @ManyToOne
-    @JoinColumn(name = "expert_id")
-    private Expert expert;
+    @JoinColumn(name = "user_id")
+    private User user;
 }
