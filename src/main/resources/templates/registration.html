@@ -13,6 +13,10 @@
     <div>
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" th:field="*{password}" required/>
+        <label for="expert">Выберите эксперта:</label>
+        <select class="form-control" id="expert" name="expert.id">
+            <option th:each="expert : ${experts}" th:value="${expert.id}" th:text="${expert.Fname + ' ' + expert.Lname}"></option>
+        </select>
     </div>
     <button type="submit">Зарегистрировать</button>
 </form>

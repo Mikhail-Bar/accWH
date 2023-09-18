@@ -4,6 +4,7 @@ package com.accWH.accWH.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,8 +23,10 @@ public class Certificate {
     private String form;
     @Column (name = "Completed")
     private boolean completed;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "DateCertificate")
     private LocalDate dateCertificate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "CompletionDate")
     private LocalDate completionDate;
     @ManyToOne
