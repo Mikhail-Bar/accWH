@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/experts")
-public class ExpertController {
+@RequestMapping("/admin/expert")
+public class AdminExpertController {
 
     @Autowired
     private ExpertRepository expertRepository;
@@ -20,20 +20,20 @@ public class ExpertController {
     public String listExperts(Model model) {
         List<Expert> experts = expertRepository.findAll();
         model.addAttribute("experts", experts);
-        return "expert/list";
+        return "list";
     }
 
     @GetMapping("/add")
     public String addExpertForm(Model model) {
         Expert expert = new Expert();
         model.addAttribute("expert", expert);
-        return "expert/add";
+        return "add";
     }
 
     @PostMapping("/add")
     public String addExpert(@ModelAttribute Expert expert) {
         expertRepository.save(expert);
-        return "redirect:/experts";
+        return "redirect:expert/list";
     }
 
     @GetMapping("/{expertId}/edit")
@@ -42,7 +42,7 @@ public class ExpertController {
                 .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
 
         model.addAttribute("expert", expert);
-        return "expert/edit";
+        return "edit";
     }
 
     @PostMapping("/{expertId}/edit")
@@ -55,7 +55,7 @@ public class ExpertController {
         existingExpert.setDep(expert.getDep());
 
         expertRepository.save(existingExpert);
-        return "redirect:/experts";
+        return "redirect:expert/list";
     }
 
     @GetMapping("/{expertId}/delete")
@@ -64,22 +64,7 @@ public class ExpertController {
                 .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
 
         expertRepository.delete(expert);
-        return "redirect:/experts";
+        return "redirect:expert/list";
     }
-   /* @GetMapping("/{id}")
-    public String getExpert(@PathVariable("id") Long id, Model model, Authentication authentication) {
-        String username = authentication.getName();
-
-        Optional<Expert> optionalExpert = expertRepository.findByUsername(username);
-
-        if (optionalExpert.isPresent()) {
-            Expert expert = optionalExpert.get();
-            model.addAttribute("expert", expert);
-        } else {
-            model.addAttribute("expert", null);
-        }
-
-        return "expert/expertHome";
-    }*/
 
 }

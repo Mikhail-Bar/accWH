@@ -25,7 +25,6 @@ public class User {
 
     @Column(name = "role", nullable = false)
     private String role;
-
     @OneToOne
     @JoinColumn(name = "expert_id")
     private Expert expert;

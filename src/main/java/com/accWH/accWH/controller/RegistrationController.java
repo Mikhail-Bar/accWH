@@ -36,12 +36,11 @@ public class RegistrationController {
 
     @PostMapping
     public String registrationSubmit(@ModelAttribute User user) {
-        // Получение выбранного эксперта из формы
+
         Long expertId = user.getExpert().getId();
         Expert selectedExpert = expertRepository.findById(expertId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid expert Id:" + expertId));
 
-        // Установка выбранного эксперта для пользователя
         user.setExpert(selectedExpert);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

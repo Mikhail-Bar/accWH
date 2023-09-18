@@ -1,4 +1,4 @@
-package com.accWH.accWH;
+package com.accWH.accWH.config;
 
 import com.accWH.accWH.model.User;
 import com.accWH.accWH.repository.UserRepository;
@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -21,7 +22,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+    @Autowired
+    private DataSource dataSource;
     @Autowired
     private UserRepository userRepository;
 
@@ -57,8 +59,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
                 );
             } else {
-                throw new UsernameNotFoundException("User not found");
+                throw new UsernameNotFoundException("Пользователь не найден");
             }
         }).passwordEncoder(passwordEncoder());
+    }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery("SELECT username, password, enabled FROM User WHERE username=?")
+                .authoritiesByUsernameQuery("SELECT username, role FROM User WHERE username=?")
+                .passwordEncoder(passwordEncoder());
     }
 }

@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Список сертификатов</title>
+    <title>Список экспертов</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-    <h2>Список сертификатов</h2>
+    <h2>Список экспертов</h2>
     <table class="table">
         <thead>
         <tr>
-            <th>Форма</th>
-            <th>Статус</th>
-            <th>Дата завершения</th>
-            <th>Эксперт</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Отдел</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="certificate : ${certificates}">
-            <td th:text="${certificate.form}"></td>
-            <td th:text="${certificate.completed ? 'Завершен' : 'В работе'}"></td>
-            <td th:text="${certificate.completionDate}"></td>
-            <td th:text="${certificate.expert.Fname + ' ' + certificate.expert.Lname}"></td>
+        <tr th:each="expert : ${experts}">
+            <td th:text="${expert.Fname}"></td>
+            <td th:text="${expert.Lname}"></td>
+            <td th:text="${expert.dep}"></td>
         </tr>
         </tbody>
     </table>

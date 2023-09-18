@@ -27,6 +27,6 @@ public class Expert {
     @OneToMany(mappedBy = "expert")
     private List<Certificate> certificates;
     @OneToOne(mappedBy = "expert")
-    private User user;
+    private User username;
 
 }

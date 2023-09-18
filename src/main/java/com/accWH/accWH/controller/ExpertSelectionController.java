@@ -23,12 +23,11 @@ public class ExpertSelectionController {
     public String selectExpertForm(Model model) {
         List<Expert> experts = expertRepository.findAll();
         model.addAttribute("experts", experts);
-        return "expert/select";
+        return "admin/expert/select";
     }
 
     @PostMapping
     public String selectExpert(@RequestParam("expertId") Long expertId) {
-        // Перенаправьте на страницу сертификатов выбранного эксперта
-        return "redirect:/experts/" + expertId;
+        return "redirect:admin/expert/" + expertId;
     }
 }

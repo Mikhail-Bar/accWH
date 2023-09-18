@@ -49,7 +49,7 @@ public class CertificateController {
     public String editCertificateForm(@PathVariable Long certificateId, Model model) {
         List<Expert> experts = expertRepository.findAll();
         Certificate certificate = certificateRepository.findById(certificateId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid certificate Id:" + certificateId));
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
 
         model.addAttribute("certificate", certificate);
         model.addAttribute("experts", experts);
@@ -59,7 +59,7 @@ public class CertificateController {
     @PostMapping("/{certificateId}/edit")
     public String editCertificate(@PathVariable Long certificateId, @ModelAttribute Certificate certificate) {
         Certificate existingCertificate = certificateRepository.findById(certificateId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid certificate Id:" + certificateId));
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
 
         existingCertificate.setForm(certificate.getForm());
         existingCertificate.setCompleted(certificate.isCompleted());
@@ -73,7 +73,7 @@ public class CertificateController {
     @GetMapping("/{certificateId}/delete")
     public String deleteCertificate(@PathVariable Long certificateId) {
         Certificate certificate = certificateRepository.findById(certificateId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid certificate Id:" + certificateId));
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
 
         certificateRepository.delete(certificate);
         return "redirect:/certificates";
@@ -101,7 +101,7 @@ public class CertificateController {
             Expert expert = optionalExpert.get();
             model.addAttribute("expert", expert);
         } else {
-            model.addAttribute("expert", null); // Передать null, если эксперт не найден
+            model.addAttribute("expert", null);
         }
 
         return "expert/expertHome";
