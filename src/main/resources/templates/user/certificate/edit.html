@@ -7,7 +7,7 @@
 <body>
 <div class="container">
     <h2>Редактирование сертификата: <span th:text="${certificate.form}"></span></h2>
-    <form th:action="@{user/certificate/{certificateId}/edit}" th:object="${certificate}" method="post">
+    <form th:action="@{/user/certificate/{id}/edit(id=${certificate.id})}" th:object="${certificate}" method="post">
         <input type="hidden" th:field="*{id}">
         <div class="form-group">
             <label for="form">Форма:</label>

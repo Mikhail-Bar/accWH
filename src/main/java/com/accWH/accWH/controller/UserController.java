@@ -55,32 +55,32 @@ public class UserController {
         if (user != null) {
             certificate.setUser(user);
             certificateRepository.save(certificate);
-            return "redirect:/user/certificate";
+            return "redirect:/";
         } else {
             return "redirect:/user/certificates?error=user_not_found";
         }
     }
 
-    @GetMapping("/{certificateId}/edit")
-    public String editCertificateForm(@PathVariable Long certificateId, Model model) {
-        Certificate certificate = certificateRepository.findById(certificateId)
-                .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
+    @GetMapping("/{id}/edit")
+    public String editCertificateForm(@PathVariable Long id, Model model) {
+        Certificate certificate = certificateRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + id));
 
         model.addAttribute("certificate", certificate);
         return "user/certificate/edit";
     }
 
-    @PostMapping("/{certificateId}/edit")
-    public String editCertificate(@PathVariable Long certificateId, @ModelAttribute Certificate certificate) {
-        Certificate existingCertificate = certificateRepository.findById(certificateId)
-                .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
+    @PostMapping("/{id}/edit")
+    public String editCertificate(@PathVariable Long id, @ModelAttribute Certificate certificate) {
+        Certificate existingCertificate = certificateRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + id));
 
         existingCertificate.setForm(certificate.getForm());
         existingCertificate.setCompleted(certificate.isCompleted());
-        existingCertificate.setCompletionDate(certificate.getDateCertificate());
+        existingCertificate.setDateCertificate(certificate.getDateCertificate());
 
         certificateRepository.save(existingCertificate);
-        return "redirect:/user/certificate";
+        return "redirect:/";
     }
 
     @GetMapping("/{certificateId}/delete")
@@ -89,6 +89,6 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
 
         certificateRepository.delete(certificate);
-        return "redirect:/user/certificate";
+        return "redirect:/";
     }
 }
