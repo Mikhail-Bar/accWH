@@ -1,5 +1,7 @@
 package com.accWH.accWH.controller;
 
+import com.accWH.accWH.model.User;
+import com.accWH.accWH.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,56 +14,56 @@ import java.util.List;
 public class ExpertController {
 
     @Autowired
-    private ExpertRepository expertRepository;
+    private UserRepository userRepository;
 
     @GetMapping
     public String listExperts(Model model) {
-        List<Expert> experts = expertRepository.findAll();
+        List<User> experts = userRepository.findAll();
         model.addAttribute("experts", experts);
         return "expert/list";
     }
 
     @GetMapping("/add")
     public String addExpertForm(Model model) {
-        Expert expert = new Expert();
-        model.addAttribute("expert", expert);
+        User user = new User();
+        model.addAttribute("expert", user);
         return "expert/add";
     }
 
     @PostMapping("/add")
-    public String addExpert(@ModelAttribute Expert expert) {
-        expertRepository.save(expert);
+    public String addExpert(@ModelAttribute User user) {
+        userRepository.save(user);
         return "redirect:/experts";
     }
 
     @GetMapping("/{expertId}/edit")
     public String editExpertForm(@PathVariable Long expertId, Model model) {
-        Expert expert = expertRepository.findById(expertId)
+        User user = userRepository.findById(expertId)
                 .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
 
-        model.addAttribute("expert", expert);
+        model.addAttribute("expert", user);
         return "expert/edit";
     }
 
     @PostMapping("/{expertId}/edit")
-    public String editExpert(@PathVariable Long expertId, @ModelAttribute Expert expert) {
-        Expert existingExpert = expertRepository.findById(expertId)
+    public String editExpert(@PathVariable Long expertId, @ModelAttribute User user) {
+        User existingExpert = userRepository.findById(expertId)
                 .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
 
-        existingExpert.setFname(expert.getFname());
-        existingExpert.setLname(expert.getLname());
-        existingExpert.setDep(expert.getDep());
+        existingExpert.setFname(user.getFname());
+        existingExpert.setLname(user.getLname());
+        existingExpert.setDep(user.getDep());
 
-        expertRepository.save(existingExpert);
+        userRepository.save(existingExpert);
         return "redirect:/experts";
     }
 
     @GetMapping("/{expertId}/delete")
     public String deleteExpert(@PathVariable Long expertId) {
-        Expert expert = expertRepository.findById(expertId)
+        User user = userRepository.findById(expertId)
                 .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
 
-        expertRepository.delete(expert);
+        userRepository.delete(user);
         return "redirect:/experts";
     }
    /* @GetMapping("/{id}")

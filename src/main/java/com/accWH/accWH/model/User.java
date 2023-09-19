@@ -36,6 +36,6 @@ public class User {
     @Column(name = "department")
     private String dep;
 
-    @OneToMany(mappedBy = "expert")
+    @OneToMany(mappedBy = "user")
     private List<Certificate> certificates;
 }

@@ -20,8 +20,6 @@ import java.util.Optional;
 @Controller
 public class HomeController {
     @Autowired
-    private ExpertRepository expertRepository;
-    @Autowired
     private CertificateRepository certificateRepository;
     @Autowired
     private UserRepository userRepository;
@@ -37,12 +35,11 @@ public class HomeController {
                 Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUsername(username));
                 if (optionalUser.isPresent()) {
                     User user = optionalUser.get();
-                    Expert expert = user.getExpert();
-                    model.addAttribute("expert", expert);
-                    List<Certificate> certificates = expert.getCertificates();
+                    model.addAttribute("user", user);
+                    List<Certificate> certificates = user.getCertificates();
                     model.addAttribute("certificates", certificates);
                 } else {
-                    model.addAttribute("expert", null);
+                    model.addAttribute("user", null);
                     model.addAttribute("certificates", Collections.emptyList());
                 }
                 return "user/home/expertHome";

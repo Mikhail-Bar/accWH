@@ -22,24 +22,15 @@ public class RegistrationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private ExpertRepository expertRepository;
     @GetMapping
     public String registrationForm(Model model) {
-        List<Expert> experts = expertRepository.findAll();
-        model.addAttribute("experts", experts);
+        List<User> experts = userRepository.findAll();
         model.addAttribute("user", new User());
         return "registration";
     }
 
     @PostMapping
     public String registrationSubmit(@ModelAttribute User user) {
-
-        Long expertId = user.getExpert().getId();
-        Expert selectedExpert = expertRepository.findById(expertId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid expert Id:" + expertId));
-
-        user.setExpert(selectedExpert);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
@@ -48,8 +39,8 @@ public class RegistrationController {
     }
     @GetMapping("/experts")
     public String listExperts(Model model) {
-        List<Expert> experts = expertRepository.findAll();
-        model.addAttribute("experts", experts);
+        List<User> users = userRepository.findAll();
+        model.addAttribute("experts", users);
         return "expert/list";
     }
 }

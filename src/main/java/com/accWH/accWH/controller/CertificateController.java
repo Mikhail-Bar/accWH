@@ -1,7 +1,9 @@
 package com.accWH.accWH.controller;
 
 import com.accWH.accWH.model.Certificate;
+import com.accWH.accWH.model.User;
 import com.accWH.accWH.repository.CertificateRepository;
+import com.accWH.accWH.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +21,7 @@ public class CertificateController {
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private ExpertRepository expertRepository;
+    private UserRepository userRepository;
 
     @GetMapping
     public String listCertificates(Model model) {
@@ -30,10 +32,10 @@ public class CertificateController {
 
     @GetMapping("/add")
     public String addCertificateForm(Model model) {
-        List<Expert> experts = expertRepository.findAll();
+        List<User> user = userRepository.findAll();
         Certificate certificate = new Certificate();
         model.addAttribute("certificate", certificate);
-        model.addAttribute("experts", experts);
+        model.addAttribute("user", user);
         return "certificate/add";
     }
 
@@ -45,7 +47,7 @@ public class CertificateController {
 
     @GetMapping("/{certificateId}/edit")
     public String editCertificateForm(@PathVariable Long certificateId, Model model) {
-        List<Expert> experts = expertRepository.findAll();
+        List<User> experts = userRepository.findAll();
         Certificate certificate = certificateRepository.findById(certificateId)
                 .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
 
@@ -62,7 +64,7 @@ public class CertificateController {
         existingCertificate.setForm(certificate.getForm());
         existingCertificate.setCompleted(certificate.isCompleted());
         existingCertificate.setCompletionDate(certificate.getCompletionDate());
-        existingCertificate.setExpert(certificate.getExpert());
+        existingCertificate.setUser(certificate.getUser());
 
         certificateRepository.save(existingCertificate);
         return "redirect:/certificates";
@@ -93,11 +95,11 @@ public class CertificateController {
     }
     @GetMapping("/{id}")
     public String getExpert(@PathVariable("id") Long id, Model model) {
-        Optional<Expert> optionalExpert = expertRepository.findById(id);
+        Optional<User> optionalExpert = userRepository.findById(id);
 
         if (optionalExpert.isPresent()) {
-            Expert expert = optionalExpert.get();
-            model.addAttribute("expert", expert);
+            User user = optionalExpert.get();
+            model.addAttribute("expert", user);
         } else {
             model.addAttribute("expert", null);
         }

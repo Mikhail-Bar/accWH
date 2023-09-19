@@ -1,5 +1,7 @@
 package com.accWH.accWH.controller;
 
+import com.accWH.accWH.model.User;
+import com.accWH.accWH.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,11 +17,11 @@ import java.util.List;
 public class ExpertSelectionController {
 
     @Autowired
-    private ExpertRepository expertRepository;
+    private UserRepository userRepository;
 
     @GetMapping
     public String selectExpertForm(Model model) {
-        List<Expert> experts = expertRepository.findAll();
+        List<User> experts = userRepository.findAll();
         model.addAttribute("experts", experts);
         return "admin/expert/select";
     }

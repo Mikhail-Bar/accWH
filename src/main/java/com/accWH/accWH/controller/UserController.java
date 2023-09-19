@@ -26,22 +26,24 @@ public class UserController {
     public String listCertificates(Model model, Authentication authentication) {
         String username = authentication.getName();
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
-
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             List<Certificate> certificates = user.getCertificates();
-
+            model.addAttribute("user", user);
             model.addAttribute("certificates", certificates);
         } else {
             throw new IllegalArgumentException("Пользователь не найден: " + username);
         }
 
-        return "user/certificate/list";
+        return "user/home/expertHome";
     }
 
     @GetMapping("/add")
-    public String addCertificateForm(Model model) {
+    public String addCertificateForm(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username);
         Certificate certificate = new Certificate();
+        model.addAttribute("user", user);
         model.addAttribute("certificate", certificate);
         return "user/certificate/add";
     }
@@ -50,7 +52,6 @@ public class UserController {
     public String addCertificate(@ModelAttribute Certificate certificate, Authentication authentication) {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username);
-
         if (user != null) {
             certificate.setUser(user);
             certificateRepository.save(certificate);
@@ -76,7 +77,7 @@ public class UserController {
 
         existingCertificate.setForm(certificate.getForm());
         existingCertificate.setCompleted(certificate.isCompleted());
-        existingCertificate.setCompletionDate(certificate.getCompletionDate());
+        existingCertificate.setCompletionDate(certificate.getDateCertificate());
 
         certificateRepository.save(existingCertificate);
         return "redirect:/user/certificate";
