@@ -1,10 +1,15 @@
 package com.accWH.accWH.repository;
 
 import com.accWH.accWH.model.Certificate;
+import com.accWH.accWH.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface CertificateRepository extends JpaRepository<Certificate, Long> {
+import java.time.LocalDate;
+import java.util.List;
 
+@Repository
+public interface CertificateRepository extends JpaRepository<Certificate, Long>, JpaSpecificationExecutor<Certificate> {
+    List<Certificate> findByDateCertificateBetweenAndUserIn(LocalDate startDate, LocalDate endDate, List<User> experts);
 }

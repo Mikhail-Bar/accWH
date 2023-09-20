@@ -38,4 +38,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Certificate> certificates;
+
+    public boolean isAdmin() {
+        return "ADMIN".equals(this.role);
+    }
 }

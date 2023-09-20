@@ -77,7 +77,11 @@ public class UserController {
 
         existingCertificate.setForm(certificate.getForm());
         existingCertificate.setCompleted(certificate.isCompleted());
-        existingCertificate.setDateCertificate(certificate.getDateCertificate());
+        if (!certificate.isCompleted()) {
+            existingCertificate.setCompletionDate(null);
+        } else {
+            existingCertificate.setCompletionDate(certificate.getCompletionDate());
+        }
 
         certificateRepository.save(existingCertificate);
         return "redirect:/";
