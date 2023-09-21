@@ -36,7 +36,7 @@ public class User {
     @Column(name = "department")
     private String dep;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Certificate> certificates;
 
     public boolean isAdmin() {

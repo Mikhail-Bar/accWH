@@ -14,15 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
-    private CertificateService certificateService; // Ваш сервис
+    private CertificateService certificateService;
 
     @Autowired
-    private UserRepository userRepository; // Ваш репозиторий для пользователей
+    private UserRepository userRepository;
 
     @GetMapping("/filter")
     public String filterCertificates(
@@ -34,15 +35,32 @@ public class AdminController {
         if (expertIds != null) {
             experts = userRepository.findAllById(expertIds);
             List<Certificate> filteredCertificates = certificateService.filterCertificates(startDate, endDate, experts);
+            Map<String, Long> certificateCounts = certificateService.countTotalCompletedAndNotCompletedCertificates(startDate, endDate, experts);
+            model.addAttribute("certificateCounts", certificateCounts);
             model.addAttribute("certificates", filteredCertificates);
             model.addAttribute("experts", experts);
             return "admin/home/adminHome";
         }
         experts = userRepository.findByRole("USER");
         List<Certificate> filteredCertificates = certificateService.filterCertificates(startDate, endDate, experts);
+        Map<String, Long> certificateCounts = certificateService.countTotalCompletedAndNotCompletedCertificates(startDate, endDate, experts);
+        model.addAttribute("certificateCounts", certificateCounts);
         model.addAttribute("certificates", filteredCertificates);
         model.addAttribute("experts", experts);
         return "admin/home/adminHome";
+    }
+
+    @GetMapping("/expertCertificateCounts")
+    public String expertCertificateCounts(Model model) {
+        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+
+        List<User> experts = userRepository.findByRole("USER");
+
+        Map<User, Map<String, Map<String, Long>>> expertMonthCertificateCounts = certificateService.countCompletedAndNotCompletedCertificatesByExpertAndForm(startDate, endDate, experts);
+
+        model.addAttribute("expertMonthCertificateCounts", expertMonthCertificateCounts);
+        return "admin/home/expertCertificateCounts";
     }
 
 }

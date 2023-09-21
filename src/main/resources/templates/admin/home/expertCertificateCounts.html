@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Редактирование сертификата</title>
+    <title>Панель администратора</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
@@ -27,6 +27,10 @@
                     <li><a class="dropdown-item" th:href="@{/admin/expert/list}">Список пользователей</a></li>
                 </ul>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/expertCertificateCounts}">Отчет за месяц</a>
+            </li>
+        </ul>
     </div>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
@@ -37,26 +41,35 @@
     </div>
 </nav>
 <div class="container">
-    <h2>Редактирование сертификата: <span th:text="${certificate.form}"></span></h2>
-    <form th:action="@{/admin/certificates/{id}/edit(id=${certificate.id})}" th:object="${certificate}" method="post">
-        <input type="hidden" th:field="*{id}">
-        <div class="form-group">
-            <label for="form">Форма:</label>
-            <input type="text" class="form-control" id="form" th:field="*{form}" required>
-        </div>
-        <div class="form-group">
-            <label for="completed">Статус:</label>
-            <select class="form-control" id="completed" th:field="*{completed}">
-                <option value="true">Завершен</option>
-                <option value="false">В работе</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="dateCertificate">Дата создания:</label>
-            <input type="date" class="form-control" id="dateCertificate" th:field="*{dateCertificate}" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-    </form>
+    <h4>Статистика сертификатов по экспертам за текущий месяц</h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Эксперт</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry : ${expertMonthCertificateCounts}">
+            <td th:text="${entry.key.Fname + ' ' + entry.key.Lname}"></td>
+            <td>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Форма</th>
+                        <th>Завершенные</th>
+                        <th>Не завершенные</th>
+                    </tr>
+                    </thead>
+                    <tr th:each="formEntry : ${entry.value}">
+                        <td th:text="${formEntry.key}"></td>
+                        <td th:text="${formEntry.value['completed']}"></td>
+                        <td th:text="${formEntry.value['notCompleted']}"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

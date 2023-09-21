@@ -33,6 +33,8 @@ public class HomeController {
             if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
                 List<User> experts = userRepository.findByRole("USER");
                 List<Certificate> certificates = certificateService.filterCertificates(LocalDate.parse("2000-01-01"), LocalDate.parse("2999-12-31"), experts);
+                Map<String, Long> certificateCounts = certificateService.countTotalCompletedAndNotCompletedCertificates(LocalDate.parse("2000-01-01"), LocalDate.parse("2999-12-31"), experts);
+                model.addAttribute("certificateCounts", certificateCounts);
                 model.addAttribute("certificates", certificates);
                 model.addAttribute("experts", experts);
                 return "admin/home/adminHome";

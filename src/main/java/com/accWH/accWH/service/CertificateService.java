@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CertificateService {
@@ -33,5 +35,55 @@ public class CertificateService {
                     experts
             );
         }
+    }
+
+    public Map<String, Long> countTotalCompletedAndNotCompletedCertificates(
+            LocalDate startDate, LocalDate endDate, List<User> experts) {
+
+        if (startDate == null) {
+            startDate = LocalDate.of(2000, 1, 1);
+        }
+        if (endDate == null) {
+            endDate = LocalDate.of(2999, 12, 31);
+        }
+
+        long totalCompleted = certificateRepository.countByDateCertificateBetweenAndUserInAndCompleted(
+                startDate, endDate, experts, true);
+
+        long totalNotCompleted = certificateRepository.countByDateCertificateBetweenAndUserInAndCompleted(
+                startDate, endDate, experts, false);
+
+        Map<String, Long> result = new HashMap<>();
+        result.put("completed", totalCompleted);
+        result.put("notCompleted", totalNotCompleted);
+
+
+        return result;
+    }
+
+    public Map<User, Map<String, Map<String, Long>>> countCompletedAndNotCompletedCertificatesByExpertAndForm(
+            LocalDate startDate, LocalDate endDate, List<User> experts) {
+        Map<User, Map<String, Map<String, Long>>> result = new HashMap<>();
+
+        for (User expert : experts) {
+            Map<String, Map<String, Long>> expertCounts = new HashMap<>();
+            List<Certificate> certificates = certificateRepository.findByDateCertificateBetweenAndUser(startDate, endDate, expert);
+
+            for (Certificate certificate : certificates) {
+                String form = certificate.getForm();
+                boolean completed = certificate.isCompleted();
+
+                if (!expertCounts.containsKey(form)) {
+                    expertCounts.put(form, new HashMap<>());
+                }
+
+                Map<String, Long> counts = expertCounts.get(form);
+                counts.put(completed ? "completed" : "notCompleted", counts.getOrDefault(completed ? "completed" : "notCompleted", 0L) + 1);
+            }
+
+            result.put(expert, expertCounts);
+        }
+
+        return result;
     }
 }

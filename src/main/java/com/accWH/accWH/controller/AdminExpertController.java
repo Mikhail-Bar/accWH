@@ -3,6 +3,7 @@ package com.accWH.accWH.controller;
 import com.accWH.accWH.model.User;
 import com.accWH.accWH.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,56 +16,59 @@ public class AdminExpertController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    @GetMapping
-    public String listExperts(Model model) {
-        List<User> experts = userRepository.findAll();
-        model.addAttribute("experts", experts);
-        return "admin/expert/list";
+    @GetMapping("/list")
+    public String userList(Model model) {
+        List<User> users = userRepository.findAll();
+        model.addAttribute("users", users);
+        return "admin/home/userList";
+    }
+    @GetMapping("/registration")
+    public String registrationForm(Model model) {
+        model.addAttribute("user", new User());
+        return "admin/home/registration";
     }
 
-    @GetMapping("/add")
-    public String addExpertForm(Model model) {
-       User expert = new User();
-        model.addAttribute("expert", expert);
-        return "admin/expert/add";
-    }
+    @PostMapping("/registration")
+    public String registrationSubmit(@ModelAttribute User user) {
 
-    @PostMapping("/add")
-    public String addExpert(@ModelAttribute User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("USER");
         userRepository.save(user);
-        return "redirect:admin/expert/list";
+        return "redirect:/admin/expert/list";
+    }
+    @GetMapping("/{id}/edit")
+    public String editUserForm(@PathVariable Long id, Model model) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID пользователя:" + id));
+
+        model.addAttribute("user", user);
+        return "admin/home/userEdit";
     }
 
-    @GetMapping("/{expertId}/edit")
-    public String editExpertForm(@PathVariable Long expertId, Model model) {
-        User user = userRepository.findById(expertId)
-                .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
+    @PostMapping("/{id}/edit")
+    public String editUser(@PathVariable Long id, @ModelAttribute User editedUser) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID пользователя:" + id));
 
-        model.addAttribute("expert", user);
-        return "admin/expert/edit";
+        existingUser.setFname(editedUser.getFname());
+        existingUser.setLname(editedUser.getLname());
+        existingUser.setDep(editedUser.getDep());
+        existingUser.setUsername(editedUser.getUsername());
+        existingUser.setPassword(passwordEncoder.encode(editedUser.getPassword()));
+        userRepository.save(existingUser);
+        return "redirect:/admin/expert/list";
     }
+    @GetMapping("/{id}/delete")
+    public String deleteUser(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Неверный ID пользователя:" + id));
 
-    @PostMapping("/{expertId}/edit")
-    public String editExpert(@PathVariable Long expertId, @ModelAttribute User user) {
-        User existingExpert = userRepository.findById(expertId)
-                .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
+        userRepository.delete(user);
 
-        existingExpert.setFname(user.getFname());
-        existingExpert.setLname(user.getLname());
-        existingExpert.setDep(user.getDep());
-
-        userRepository.save(existingExpert);
-        return "redirect:admin/expert/list";
-    }
-
-    @GetMapping("/{expertId}/delete")
-    public String deleteExpert(@PathVariable Long expertId) {
-        User expert = userRepository.findById(expertId)
-                .orElseThrow(() -> new IllegalArgumentException("Неверный id эксперта:" + expertId));
-
-        userRepository.delete(expert);
-        return "redirect:admin/expert/list";
+        return "redirect:/admin/expert/list";
     }
 
 }

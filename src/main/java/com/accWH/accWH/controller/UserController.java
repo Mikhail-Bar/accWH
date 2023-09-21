@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +95,20 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("Неверный ID сертификата:" + certificateId));
 
         certificateRepository.delete(certificate);
+        return "redirect:/";
+    }
+    @GetMapping("/complete/{id}")
+    public String completeCertificate(@PathVariable("id") Long id) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findById(id);
+
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+            if (!certificate.isCompleted()) {
+                certificate.setCompleted(true);
+                certificate.setCompletionDate(LocalDate.now());
+                certificateRepository.save(certificate);
+            }
+        }
         return "redirect:/";
     }
 }

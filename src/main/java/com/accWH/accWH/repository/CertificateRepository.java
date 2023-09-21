@@ -12,4 +12,10 @@ import java.util.List;
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long>, JpaSpecificationExecutor<Certificate> {
     List<Certificate> findByDateCertificateBetweenAndUserIn(LocalDate startDate, LocalDate endDate, List<User> experts);
+
+
+    long countByDateCertificateBetweenAndUserInAndCompleted(LocalDate startDate, LocalDate endDate, List<User> experts, boolean b);
+
+
+    List<Certificate> findByDateCertificateBetweenAndUser(LocalDate startDate, LocalDate endDate, User expert);
 }
