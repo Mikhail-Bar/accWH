@@ -30,8 +30,8 @@ public class User {
     @Column(name = "Fname")
     private String Fname;
 
-    @Column(name = "Lname")
-    private String Lname;
+    @Column(name = "lname")
+    private String lname;
 
     @Column(name = "department")
     private String dep;

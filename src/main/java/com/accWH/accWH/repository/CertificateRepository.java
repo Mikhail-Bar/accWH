@@ -18,4 +18,6 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long>,
 
 
     List<Certificate> findByDateCertificateBetweenAndUser(LocalDate startDate, LocalDate endDate, User expert);
+
+    Certificate findByCertificateNumber(String certificateNumber);
 }

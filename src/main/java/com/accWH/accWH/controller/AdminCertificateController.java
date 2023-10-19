@@ -34,8 +34,8 @@ public class AdminCertificateController {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
         if (userOptional.isPresent() && userOptional.get().isAdmin()) {
             List<User> experts = userRepository.findByRole("USER");
-            List<Certificate> certificates = certificateService.filterCertificates(LocalDate.parse("2000-01-01"), LocalDate.parse("2999-12-31"), experts);
-            Map<String, Long> certificateCounts = certificateService.countTotalCompletedAndNotCompletedCertificates(LocalDate.parse("2000-01-01"), LocalDate.parse("2999-12-31"), experts);
+            List<Certificate> certificates = certificateService.filterCertificates(LocalDate.parse("01.01.2000"), LocalDate.parse("31.12.2999"), experts);
+            Map<String, Long> certificateCounts = certificateService.countTotalCompletedAndNotCompletedCertificates(LocalDate.parse("01.01.2000"), LocalDate.parse("31.12.2999"), experts);
             model.addAttribute("certificateCounts", certificateCounts);
             model.addAttribute("certificates", certificates);
             model.addAttribute("experts", experts);

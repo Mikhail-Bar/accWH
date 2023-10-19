@@ -45,7 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin(withDefaults())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")
-                );
+                )
+                .csrf().disable();
     }
 
     @Override

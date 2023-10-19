@@ -30,6 +30,9 @@
       <li class="nav-item">
         <a class="nav-link" th:href="@{/admin/expertCertificateCounts}">Отчет за месяц</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" th:href="@{/admin/upload}">Импорт сертификатов</a>
+      </li>
     </ul>
   </div>
   <div class="collapse navbar-collapse" id="navbarNav">
@@ -142,6 +145,20 @@
 
       $("#confirmDeleteButton").attr("href", "/admin/certificates/" + certificateId + "/delete");
     });
+  });
+  document.getElementById('filterForm').addEventListener('submit', function (e) {
+    var startDateInput = document.getElementById('startDate');
+    var endDateInput = document.getElementById('endDate');
+
+    if (startDateInput.value) {
+      var startDate = new Date(startDateInput.value);
+      startDateInput.value = startDate.toLocaleDateString('en-GB');
+    }
+
+    if (endDateInput.value) {
+      var endDate = new Date(endDateInput.value);
+      endDateInput.value = endDate.toLocaleDateString('en-GB');
+    }
   });
 </script>
 </body>

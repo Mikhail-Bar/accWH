@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ public class CertificateService {
             return certificateRepository.findAll();
         } else {
             return certificateRepository.findByDateCertificateBetweenAndUserIn(
-                    startDate != null ? LocalDate.from(startDate.atStartOfDay()) : LocalDate.parse("2000-01-01"),
-                    endDate != null ? LocalDate.from(endDate.atTime(23, 59, 59)) : LocalDate.parse("2999-12-31"),
+                    startDate != null ? LocalDate.from(startDate.atStartOfDay()) : LocalDate.parse("01.01.2000", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    endDate != null ? LocalDate.from(endDate.atTime(23, 59, 59)) : LocalDate.parse("31.12.2999", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                     experts
             );
         }
