@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,8 +35,8 @@ public class AdminCertificateController {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
         if (userOptional.isPresent() && userOptional.get().isAdmin()) {
             List<User> experts = userRepository.findByRole("USER");
-            List<Certificate> certificates = certificateService.filterCertificates(LocalDate.parse("01.01.2000"), LocalDate.parse("31.12.2999"), experts);
-            Map<String, Long> certificateCounts = certificateService.countTotalCompletedAndNotCompletedCertificates(LocalDate.parse("01.01.2000"), LocalDate.parse("31.12.2999"), experts);
+            List<Certificate> certificates = certificateService.filterCertificates(LocalDate.parse("01.01.2000", DateTimeFormatter.ofPattern("dd.MM.yyyy")), LocalDate.parse("31.12.2999", DateTimeFormatter.ofPattern("dd.MM.yyyy")), experts);
+            Map<String, Long> certificateCounts = certificateService.countTotalCompletedAndNotCompletedCertificates(LocalDate.parse("01.01.2000", DateTimeFormatter.ofPattern("dd.MM.yyyy")), LocalDate.parse("31.12.2999", DateTimeFormatter.ofPattern("dd.MM.yyyy")), experts);
             model.addAttribute("certificateCounts", certificateCounts);
             model.addAttribute("certificates", certificates);
             model.addAttribute("experts", experts);

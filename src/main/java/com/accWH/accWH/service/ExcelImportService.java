@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 
 @Service
@@ -29,6 +30,7 @@ public class ExcelImportService {
     private UserRepository userRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ExcelImportService.class);
+    private static final DateTimeFormatter excelDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public void importDataFromExcel(MultipartFile multipartFile) throws IOException {
         try {
@@ -50,8 +52,8 @@ public class ExcelImportService {
             certificate.setCompleted(getBooleanValue(row.getCell(1)));
             certificate.setDateCertificate(getLocalDateValue(row.getCell(2)));
             certificate.setCompletionDate(getLocalDateValue(row.getCell(3)));
-            certificate.setBlankNumber(getStringValue(row.getCell(6)));
-            String expertName = getStringValue(row.getCell(4));
+            certificate.setBlankNumber(getStringValue(row.getCell(4)));
+            String expertName = getStringValue(row.getCell(5));
             String[] expertNameParts = expertName.split("\\.");
 
             String lastNameWithMaxChars = "";
@@ -64,7 +66,7 @@ public class ExcelImportService {
             if (user != null) {
                 certificate.setUser(user);
             }
-            String certificateNumber = getStringValue(row.getCell(5));
+            String certificateNumber = getStringValue(row.getCell(6));
 
             Certificate existingCertificate = certificateRepository.findByCertificateNumber(certificateNumber);
             if (existingCertificate != null) {
@@ -86,7 +88,7 @@ public class ExcelImportService {
         workbook.close();
         inputStream.close();
         } catch (Exception e) {
-            // Логируйте ошибку
+
             logger.error("An error occurred during data import:", e);
         }
     }
@@ -111,8 +113,28 @@ public class ExcelImportService {
         if (cell == null) {
             return null;
         }
-        cell.setCellType(CellType.STRING);
-        return LocalDate.parse(cell.getStringCellValue());
+        if (cell.getCellType() == CellType.NUMERIC) {
+            try {
+                double excelDateValue = cell.getNumericCellValue();
+                return convertExcelDateToLocalDate(excelDateValue);
+            } catch (Exception e) {
+                logger.error("Error converting numeric Excel date to LocalDate", e);
+            }
+        } else if (cell.getCellType() == CellType.STRING) {
+            try {
+                return LocalDate.parse(cell.getStringCellValue(), excelDateFormat);
+            } catch (Exception e) {
+                logger.error("Error parsing string date to LocalDate", e);
+            }
+        }
+        return null;
+    }
+
+    public LocalDate convertExcelDateToLocalDate(double excelDate) {
+        int excelEpochDay = 2;
+        LocalDate localDate = LocalDate.of(1900, 1, 1)
+                .plusDays((long) excelDate - excelEpochDay);
+        return localDate;
     }
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
