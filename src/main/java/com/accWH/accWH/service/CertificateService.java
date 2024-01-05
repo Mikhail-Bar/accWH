@@ -5,6 +5,8 @@ import com.accWH.accWH.model.User;
 import com.accWH.accWH.repository.CertificateRepository;
 import com.accWH.accWH.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,7 +17,7 @@ import java.util.Map;
 
 @Service
 public class CertificateService {
-
+    @Autowired
     private final CertificateRepository certificateRepository;
     private final UserRepository userRepository;
 
@@ -34,6 +36,18 @@ public class CertificateService {
                     startDate != null ? LocalDate.from(startDate.atStartOfDay()) : LocalDate.parse("01.01.2000", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                     endDate != null ? LocalDate.from(endDate.atTime(23, 59, 59)) : LocalDate.parse("31.12.2999", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                     experts
+            );
+        }
+    }
+    public Page<Certificate> filterCertificatesPageable(LocalDate startDate, LocalDate endDate, List<User> experts, Pageable pageable) {
+        if (startDate == null && endDate == null && (experts == null || experts.isEmpty())) {
+            return certificateRepository.findAll(pageable);
+        } else {
+            return certificateRepository.findCertificatesByDateCertificateBetweenAndUserIn(
+                    startDate != null ? LocalDate.from(startDate.atStartOfDay()) : LocalDate.parse("01.01.2000", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    endDate != null ? LocalDate.from(endDate.atTime(23, 59, 59)) : LocalDate.parse("31.12.2999", DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    experts,
+                    pageable
             );
         }
     }

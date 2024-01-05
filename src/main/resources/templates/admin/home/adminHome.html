@@ -76,13 +76,41 @@
             <li><a class="dropdown-item" th:href="@{'/admin/certificates/' + ${certificate.id} + '/edit/'}">Редактировать</a></li>
             <li><a class="dropdown-item" th:data-certificate-id="${certificate.id}" data-bs-toggle="modal" data-bs-target="#deleteModal">Удалить</a></li>
           </ul>
+          </div>
       </td>
     </tr>
     </tbody>
   </table>
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+
+      <!-- Кнопка "Предыдущая" -->
+      <li th:class="${currentPage == 1} ? 'page-item disabled' : 'page-item'">
+        <a class="page-link" th:href="@{/admin/certificates(page=${currentPage - 1})}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+
+      <!-- Цикл для отображения номеров страниц -->
+      <div th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+        <li th:class="${pageNumber == currentPage} ? 'page-item active' : 'page-item'">
+          <a class="page-link" th:href="@{/admin/certificates(page=${pageNumber})}">[[${pageNumber}]]</a>
+        </li>
+      </div>
+
+      <!-- Кнопка "Следующая" -->
+      <li th:class="${currentPage == totalPages} ? 'page-item disabled' : 'page-item'">
+        <a class="page-link" th:href="@{/admin/certificates(page=${currentPage + 1})}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
   <h4>Общее количество сертификатов:</h4>
   <p>Завершенные: <span th:text="${certificateCounts['completed']}"></span></p>
   <p>Не завершенные: <span th:text="${certificateCounts['notCompleted']}"></span></p>
+
   <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content">
@@ -93,7 +121,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form th:action="@{/admin/filter}" method="get" id="filterForm">
+          <form method="get" id="filterForm">
             <div class="form-row">
               <div class="form-group ">
                 <label for="startDate">Дата начала:</label>
@@ -146,6 +174,7 @@
       $("#confirmDeleteButton").attr("href", "/admin/certificates/" + certificateId + "/delete");
     });
   });
+
   document.getElementById('filterForm').addEventListener('submit', function (e) {
     var startDateInput = document.getElementById('startDate');
     var endDateInput = document.getElementById('endDate');
@@ -159,6 +188,36 @@
       var endDate = new Date(endDateInput.value);
       endDateInput.value = endDate.toLocaleDateString('en-GB');
     }
+  });
+
+  $(document).ready(function () {
+    $('#filterForm').on('submit', function (e) {
+      e.preventDefault(); // Предотвращение стандартной отправки формы
+
+      var startDate = $('#startDate').val();
+      var endDate = $('#endDate').val();
+      var experts = $('#experts').val();
+
+      // Отправка асинхронного запроса на сервер
+      $.get('/admin/filter', { startDate: startDate, endDate: endDate, experts: experts }, function (data) {
+        // Обновление таблицы с данными
+        // В data будет содержаться отфильтрованный результат
+        // Обновите таблицу с использованием полученных данных
+        $('#filterModal').modal('hide');
+      }).done(function(response) {
+        // Обработка успешного ответа от сервера, если необходимо
+        console.log('Start Date:', startDate);
+        console.log('End Date:', endDate);
+        console.log('Experts:', experts);
+        console.log(response);
+      }).fail(function(error) {
+        // Обработка ошибки, если необходимо
+        console.log('Start Date:', startDate);
+        console.log('End Date:', endDate);
+        console.log('Experts:', experts);
+        console.error(error);
+      });
+    });
   });
 </script>
 </body>
